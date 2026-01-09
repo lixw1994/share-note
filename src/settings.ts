@@ -74,6 +74,22 @@ export class ShareSettingsTab extends PluginSettingTab {
 
     containerEl.empty()
 
+    // Server URL
+    new Setting(containerEl)
+      .setName('Server URL')
+      .setDesc('The API server URL. Only change this if you are self-hosting.')
+      .addText(text => text
+        .setPlaceholder(DEFAULT_SETTINGS.server)
+        .setValue(this.plugin.settings.server)
+        .onChange(async (value) => {
+          const trimmed = value.trim().replace(/\/+$/, '')
+          if (trimmed && !trimmed.match(/^https?:\/\//)) {
+            return
+          }
+          this.plugin.settings.server = trimmed || DEFAULT_SETTINGS.server
+          await this.plugin.saveSettings()
+        }))
+
     // API key
     new Setting(containerEl)
       .setName('API key')
